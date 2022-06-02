@@ -82,7 +82,7 @@ router.post("/get/mail/data",async(req,res)=>{
    
     })
     
-    //res.send("fetched")
+    res.send("fetched")
    
   
 })
