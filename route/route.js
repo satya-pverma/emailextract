@@ -87,4 +87,8 @@ router.post("/get/mail/data",async(req,res)=>{
   
 })
 
+router.get("/", async(req,res)=>{
+    res.send("Server Started")
+})
+
   module.exports=router
