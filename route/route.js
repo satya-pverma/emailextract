@@ -31,7 +31,7 @@ router.post("/get/mail/data",async(req,res)=>{
     mailListener.start(); // start listening
     
     // stop listening
-    //mailListener.stop();
+    //
     
     mailListener.on("server:connected", function(){
       console.log("imapConnected");
@@ -81,7 +81,7 @@ router.post("/get/mail/data",async(req,res)=>{
      }
    
     })
-    
+    mailListener.stop();
     res.send("fetched")
    
   
