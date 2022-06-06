@@ -16,7 +16,6 @@ router.post("/get/mail/data",async(req,res)=>{
       port: 993, // imap port
       tls: true,
       connTimeout: 10000, // Default by node-imap
-      keepAlive:true,
       authTimeout: 10000, // Default by node-imap,
       debug: console.log, // Or your custom function with only one incoming argument. Default: null
       tlsOptions: { rejectUnauthorized: false },
@@ -31,7 +30,7 @@ router.post("/get/mail/data",async(req,res)=>{
     mailListener.start(); // start listening
     
     // stop listening
-    //
+    //mailListener.stop();
     
     mailListener.on("server:connected", function(){
       console.log("imapConnected");
@@ -77,11 +76,11 @@ router.post("/get/mail/data",async(req,res)=>{
         var datx={"sender_name":data.value[0].name,"sender_mail":data.value[0].address,"receiver_mail":todata.value[0].address,"time":date,"file":file}
         // console.log(datx)
         await axios.post("https://ap-south-1.aws.data.mongodb-api.com/app/contrato-invc-cofeu/endpoint/hook/save/email/attachment",datx)
-
+        mailListener.stop();
      }
    
     })
-    mailListener.stop();
+    
     res.send("fetched")
    
   

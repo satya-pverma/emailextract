@@ -10,7 +10,6 @@ var mailListener = new MailListener({
   port: 993, // imap port
   tls: true,
   connTimeout: 10000, // Default by node-imap
-  keepAlive:true,
   authTimeout: 10000, // Default by node-imap,
   debug: console.log, // Or your custom function with only one incoming argument. Default: null
   tlsOptions: { rejectUnauthorized: false },
@@ -44,7 +43,7 @@ mailListener.on("error", function(err){
 });
 
 mailListener.on("headers", function(headers, seqno){
-//   console.log(headers)
+   console.log(headers)
   
 });
 
@@ -59,14 +58,21 @@ mailListener.on("attachment", function(attachment, path, seqno){
 
 mailListener.on("mail",async function(mail, seqno) {
   // do something with the whole email as a single object
+  console.log(mail)
   var data= mail.headers.get("from")
   console.log("name"+data.value[0].name)
   console.log("address"+data.value[0].address)
 //   console.log(mail.attachments[0].content.toString("base64"))
  var file=mail.attachments[0].content.toString("base64") || ''
 var datx={"sender_name":data.value[0].name,"sender_mail":data.value[0].address,"file":file}
-await axios.post("https://ap-south-1.aws.data.mongodb-api.com/app/contrato-invc-cofeu/endpoint/hook/save/email/attachment",datx)
+console.log(datx)
+//await axios.post("https://ap-south-1.aws.data.mongodb-api.com/app/contrato-invc-cofeu/endpoint/hook/save/email/attachment",datx)
+
+mailListener.stop();
+
 })
+
+
 
 // it's possible to access imap object from node-imap library for performing additional actions. E.x.
 // mailListener.imap.move(:msguids, :mailboxes, function(){})
