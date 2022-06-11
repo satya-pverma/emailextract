@@ -75,7 +75,7 @@ router.post("/get/mail/data",async(req,res)=>{
      for(var i=0;i<mail.attachments.length;i++)
      {
         var file=mail.attachments[i].content.toString("base64") || ''
-        var datx={"from":fromdata.value,"to":todata.value,"cc":ccdata, "time":date,"file":file}
+        var datx={"from":fromdata.value,"to":todata.value,"cc":ccdata.value, "time":date,"file":file}
         // console.log(datx)
         await axios.post("https://ap-south-1.aws.data.mongodb-api.com/app/contrato-invc-cofeu/endpoint/hook/save/email/attachment",datx)
         mailListener.stop();
