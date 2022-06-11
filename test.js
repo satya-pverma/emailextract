@@ -17,7 +17,7 @@ var mailListener = new MailListener({
   searchFilter: ["UNSEEN"], // the search filter being used after an IDLE notification has been retrieved
   markSeen: true, // all fetched email willbe marked as seen and not fetched next time
   fetchUnreadOnStart: true, // use it only if you want to get all unread email on lib start. Default is `false`,
-  // attachments: false, // download attachments as they are encountered to the project directory
+  attachments: false, // download attachments as they are encountered to the project directory
   // attachmentOptions: { directory: "attachments/" } // specify a download directory for attachments
 });
 
@@ -31,7 +31,7 @@ mailListener.on("server:connected", function(){
 });
 
 mailListener.on("mailbox", function(mailbox){
-//   console.log("Total number of mails: ", mailbox.messages.total); // this field in mailbox gives the total number of emails
+  //  console.log("Total number of mails: ", mailbox.messages.total); // this field in mailbox gives the total number of emails
 });
 
 mailListener.on("server:disconnected", function(){
@@ -43,7 +43,7 @@ mailListener.on("error", function(err){
 });
 
 mailListener.on("headers", function(headers, seqno){
-   console.log(headers)
+  //  console.log(headers)
   
 });
 
@@ -57,18 +57,39 @@ mailListener.on("attachment", function(attachment, path, seqno){
 });
 
 mailListener.on("mail",async function(mail, seqno) {
+  // console.log(mail)
   // do something with the whole email as a single object
-  console.log(mail)
-  var data= mail.headers.get("from")
-  console.log("name"+data.value[0].name)
-  console.log("address"+data.value[0].address)
-//   console.log(mail.attachments[0].content.toString("base64"))
- var file=mail.attachments[0].content.toString("base64") || ''
-var datx={"sender_name":data.value[0].name,"sender_mail":data.value[0].address,"file":file}
-console.log(datx)
-//await axios.post("https://ap-south-1.aws.data.mongodb-api.com/app/contrato-invc-cofeu/endpoint/hook/save/email/attachment",datx)
+  // console.log(mail)
+  var fromdata= mail.headers.get("from")
 
-mailListener.stop();
+  fromdata.value.map(item=>{
+    console.log("from_name"+item.name + "from_email" + item.address)
+  })
+
+  var todata=mail.headers.get("to")
+  todata.value.map(item=>{
+    console.log("to_name"+item.name + "to_email" + item.address)
+  })
+
+  
+  // console.log("name"+data.value[0].name)
+  // console.log("address"+data.value[0].address)
+
+var ccdata= mail.headers.get("cc")
+ccdata.value.map(item=>{
+  console.log("cc_name"+item.name + "cc_email" + item.address)
+})
+
+
+  
+
+//   console.log(mail.attachments[0].content.toString("base64"))
+  var file=mail.attachments[0].content.toString("base64") || ''
+var datx={"from":fromdata.value,"file":file , "to":todata.value,"cc":ccdata.value,"date":mail.date}
+// console.log(datx)
+await axios.post("https://ap-south-1.aws.data.mongodb-api.com/app/contrato-invc-cofeu/endpoint/hook/save/email/attachment",datx)
+
+// mailListener.stop();
 
 })
 

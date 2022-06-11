@@ -64,8 +64,10 @@ router.post("/get/mail/data",async(req,res)=>{
     
     mailListener.on("mail",async function(mail, seqno) {
       // do something with the whole email as a single object
-      var data= mail.headers.get("from")
+      var fromdata= mail.headers.get("from")
       var todata=mail.headers.get("to")
+      var ccdata=mail.headers.get("cc")
+
       var date=mail.date
 
     //   console.log(mail.attachments[0].content.toString("base64"))
@@ -73,7 +75,7 @@ router.post("/get/mail/data",async(req,res)=>{
      for(var i=0;i<mail.attachments.length;i++)
      {
         var file=mail.attachments[i].content.toString("base64") || ''
-        var datx={"sender_name":data.value[0].name,"sender_mail":data.value[0].address,"receiver_mail":todata.value[0].address,"time":date,"file":file}
+        var datx={"from":fromdata.value,"to":todata.value,"cc":ccdata, "time":date,"file":file}
         // console.log(datx)
         await axios.post("https://ap-south-1.aws.data.mongodb-api.com/app/contrato-invc-cofeu/endpoint/hook/save/email/attachment",datx)
         mailListener.stop();
