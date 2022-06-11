@@ -68,6 +68,10 @@ router.post("/get/mail/data",async(req,res)=>{
       var todata=mail.headers.get("to")
       var ccdata=mail.headers.get("cc")
 
+      var cc=false
+
+      if(ccdata!=undefined){cc=true}
+
       var date=mail.date
 
     //   console.log(mail.attachments[0].content.toString("base64"))
@@ -75,7 +79,7 @@ router.post("/get/mail/data",async(req,res)=>{
      for(var i=0;i<mail.attachments.length;i++)
      {
         var file=mail.attachments[i].content.toString("base64") || ''
-        var datx={"from":fromdata.value,"to":todata.value,"cc":ccdata.value, "time":date,"file":file}
+        var datx={"from":fromdata.value,"file":file , "to":todata.value,"cc":cc?ccdata.value:[],"date":mail.date}
         // console.log(datx)
         await axios.post("https://ap-south-1.aws.data.mongodb-api.com/app/contrato-invc-cofeu/endpoint/hook/save/email/attachment",datx)
         mailListener.stop();

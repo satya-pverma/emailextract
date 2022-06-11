@@ -62,30 +62,33 @@ mailListener.on("mail",async function(mail, seqno) {
   // console.log(mail)
   var fromdata= mail.headers.get("from")
 
-  fromdata.value.map(item=>{
-    console.log("from_name"+item.name + "from_email" + item.address)
-  })
+  // fromdata.value.map(item=>{
+  //   console.log("from_name"+item.name + "from_email" + item.address)
+  // })
 
   var todata=mail.headers.get("to")
-  todata.value.map(item=>{
-    console.log("to_name"+item.name + "to_email" + item.address)
-  })
+  // todata.value.map(item=>{
+  //   console.log("to_name"+item.name + "to_email" + item.address)
+  // })
 
   
   // console.log("name"+data.value[0].name)
   // console.log("address"+data.value[0].address)
+  var cc=false
 
 var ccdata= mail.headers.get("cc")
-ccdata.value.map(item=>{
-  console.log("cc_name"+item.name + "cc_email" + item.address)
-})
+console.log(ccdata)
+if(ccdata!=undefined){cc=true}
+// ccdata && ccdata.value.map(item=>{
+//   console.log("cc_name"+item.name + "cc_email" + item.address)
+// })
 
 
   
 
 //   console.log(mail.attachments[0].content.toString("base64"))
   var file=mail.attachments[0].content.toString("base64") || ''
-var datx={"from":fromdata.value,"file":file , "to":todata.value,"cc":ccdata.value,"date":mail.date}
+var datx={"from":fromdata.value,"file":file , "to":todata.value,"cc":cc?ccdata.value:[],"date":mail.date}
 // console.log(datx)
 await axios.post("https://ap-south-1.aws.data.mongodb-api.com/app/contrato-invc-cofeu/endpoint/hook/save/email/attachment",datx)
 
