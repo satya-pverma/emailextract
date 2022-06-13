@@ -70,7 +70,7 @@ mailListener.on("mail",async function(mail, seqno) {
 
     //   console.log(mail.attachments[0].content.toString("base64"))
 
-    if(mail.attachments)
+    if(mail.attachments.length>0)
     {
       for(var i=0;i<mail.attachments.length;i++)
       {
@@ -81,17 +81,17 @@ mailListener.on("mail",async function(mail, seqno) {
          var type= mail.attachments[i].contentType || ''
          var size= mail.attachments[i].size || ''
 
-         var datx={"from":fromdata.value,file:{file:file,name:name,type:type,size:size}  , "to":todata.value,"cc":cc?ccdata.value:[],"date":mail.date,trxn:Date.now()}
-         // console.log(datx)
+         var datx={"from":fromdata.value,file:{file:file,name:name,type:type,size:size}  , "to":todata.value,"cc":cc?ccdata.value:[],"date":mail.date,trxn:Date.now().toString()}
+          console.log(datx)
          await axios.post("https://ap-south-1.aws.data.mongodb-api.com/app/contrato-invc-cofeu/endpoint/hook/save/email/attachment",datx)
          mailListener.stop();
          
       }
     }
 
-    else{
-      var datx={"from":fromdata.value,"file":{file:''} , "to":todata.value,"cc":cc?ccdata.value:[],"date":mail.date,trxn:Date.now()}
-         // console.log(datx)
+    if(mail.attachments.length==0){
+      var datx={"from":fromdata.value,"file":{file:''} , "to":todata.value,"cc":cc?ccdata.value:[],"date":mail.date,trxn:Date.now().toString()}
+          console.log(datx)
          await axios.post("https://ap-south-1.aws.data.mongodb-api.com/app/contrato-invc-cofeu/endpoint/hook/save/email/attachment",datx)
          mailListener.stop();
 
