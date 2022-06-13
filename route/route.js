@@ -84,9 +84,10 @@ router.post("/get/mail/data",async(req,res)=>{
         await axios.post("https://ap-south-1.aws.data.mongodb-api.com/app/contrato-invc-cofeu/endpoint/hook/save/email/attachment",datx)
         
      }
-     mailListener.stop();
+    
    
     })
+    mailListener.stop();
     
     res.send("fetched")
    
