@@ -76,7 +76,7 @@ router.post("/get/mail/data",async(req,res)=>{
 
     //   console.log(mail.attachments[0].content.toString("base64"))
 
-    if(mail.attachment)
+    if(mail.attachments)
     {
       for(var i=0;i<mail.attachments.length;i++)
       {
