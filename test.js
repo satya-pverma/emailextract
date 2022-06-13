@@ -57,42 +57,46 @@ mailListener.on("attachment", function(attachment, path, seqno){
 });
 
 mailListener.on("mail",async function(mail, seqno) {
-  // console.log(mail)
-  // do something with the whole email as a single object
-  // console.log(mail)
+  
   var fromdata= mail.headers.get("from")
+      var todata=mail.headers.get("to")
+      var ccdata=mail.headers.get("cc")
 
-  // fromdata.value.map(item=>{
-  //   console.log("from_name"+item.name + "from_email" + item.address)
-  // })
+      var cc=false
 
-  var todata=mail.headers.get("to")
-  // todata.value.map(item=>{
-  //   console.log("to_name"+item.name + "to_email" + item.address)
-  // })
+      if(ccdata!=undefined){cc=true}
 
-  
-  // console.log("name"+data.value[0].name)
-  // console.log("address"+data.value[0].address)
-  var cc=false
+      var date=mail.date
 
-var ccdata= mail.headers.get("cc")
-console.log(ccdata)
-if(ccdata!=undefined){cc=true}
-// ccdata && ccdata.value.map(item=>{
-//   console.log("cc_name"+item.name + "cc_email" + item.address)
-// })
+    //   console.log(mail.attachments[0].content.toString("base64"))
 
+    if(mail.attachments)
+    {
+      for(var i=0;i<mail.attachments.length;i++)
+      {
 
-  
+         
+         var file=mail.attachments[i].content.toString("base64") || ''
+         var name=mail.attachments[i].filename || ''
+         var type= mail.attachments[i].contentType || ''
+         var size= mail.attachments[i].size || ''
 
-//   console.log(mail.attachments[0].content.toString("base64"))
-  var file=mail.attachments[0].content.toString("base64") || ''
-var datx={"from":fromdata.value,"file":file , "to":todata.value,"cc":cc?ccdata.value:[],"date":mail.date}
-// console.log(datx)
-await axios.post("https://ap-south-1.aws.data.mongodb-api.com/app/contrato-invc-cofeu/endpoint/hook/save/email/attachment",datx)
+         var datx={"from":fromdata.value,file:{file:file,name:name,type:type,size:size}  , "to":todata.value,"cc":cc?ccdata.value:[],"date":mail.date,trxn:Date.now()}
+         // console.log(datx)
+         await axios.post("https://ap-south-1.aws.data.mongodb-api.com/app/contrato-invc-cofeu/endpoint/hook/save/email/attachment",datx)
+         mailListener.stop();
+         
+      }
+    }
 
- mailListener.stop();
+    else{
+      var datx={"from":fromdata.value,"file":{file:''} , "to":todata.value,"cc":cc?ccdata.value:[],"date":mail.date,trxn:Date.now()}
+         // console.log(datx)
+         await axios.post("https://ap-south-1.aws.data.mongodb-api.com/app/contrato-invc-cofeu/endpoint/hook/save/email/attachment",datx)
+         mailListener.stop();
+
+    }
+     
 
 })
 
