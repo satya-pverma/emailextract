@@ -10,8 +10,8 @@ router.post("/get/mail/data",async(req,res)=>{
     
     
     var mailListener = new MailListener({
-      username: "satyavermaofficial@gmail.com",
-      password: "rfsayxgoxzoijmvw",
+      username: "settle.mx@gmail.com",
+      password: "mzrpgkxdggvhmyao",
       host: "imap.gmail.com",
       port: 993, // imap port
       tls: true,
